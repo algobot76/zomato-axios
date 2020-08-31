@@ -24,7 +24,6 @@ const getJson = (config, endpoint, opts, cb) => {
   const cacheKeyStr = JSON.stringify(cacheKey);
   const cacheKeyID = Buffer.from(cacheKeyStr).toString("base64");
   const cachedResult = cache.get(cacheKeyID);
-  console.log(cachedResult);
   if (cachedResult !== null) {
     return new Promise((resolve, reject) => {
       if (cb) {
