@@ -8,6 +8,7 @@ class Zomato {
   constructor(config) {
     endpoints.forEach(endpoint => {
       this[endpoint[0]] = (opts, cb) => {
+        console.log(opts);
         return getJson(config, endpoint[1], opts, cb);
       };
     });
@@ -20,7 +21,10 @@ const getJson = (config, endpoint, opts, cb) => {
   }
   let cacheKey = cloneDeep(opts);
   cacheKey.endpont = endpoint;
-  const cachedResult = cache.get(cacheKey);
+  const cacheKeyStr = JSON.stringify(cacheKey);
+  const cacheKeyID = Buffer.from(cacheKeyStr).toString("base64");
+  const cachedResult = cache.get(cacheKeyID);
+  console.log(cachedResult);
   if (cachedResult !== null) {
     return new Promise((resolve, reject) => {
       if (cb) {
@@ -58,7 +62,7 @@ const getJson = (config, endpoint, opts, cb) => {
           } else {
             response = response.data;
             if (values.cacheLimit > 0) {
-              cache.put(cacheKey, response, values.cacheLimit);
+              cache.put(cacheKeyID, response, values.cacheLimit);
             }
 
             if (cb) {
